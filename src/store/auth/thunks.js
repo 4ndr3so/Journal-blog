@@ -22,17 +22,16 @@ export const startGoogleSignIn = () => {
 }
 
 export const startCreatingUserWithEmailPassword = ({ email, password, displayName }) => {
-    return async ( dispatch ) => {
+    return async( dispatch ) => {
+
         dispatch( checkingCredentials() );
-        // const result = await registerUserWithEmailPassword({ email, password, displayName });
-        // console.log(result);
-        // if( !result.ok ) return dispatch( logout( result.errorMessage ) );
-        // dispatch( login( result ) );
 
-        const {ok,uid,photoURL,errorMessage}=await registerUserWithEmailPassword({ email, password, displayName })
-      
-         if( !ok ) return dispatch( logout( errorMessage ) );
+        const {ok,uid,photoURL,errorMessage} = await registerUserWithEmailPassword({ email, password, displayName });
+        //console.log({result});
+        if ( !ok ) return dispatch( logout( {errorMessage} ) );
 
-         dispatch( login({ uid, photoURL, email, displayName }) );
+        dispatch( login( {uid,displayName,email,photoURL} ))
+
     }
+
 }

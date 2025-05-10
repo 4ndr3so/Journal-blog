@@ -1,10 +1,10 @@
 import { Link as RouterLink } from 'react-router-dom';
-import { Button, Grid, Link, TextField, Typography } from '@mui/material';
+import { Alert, Button, Grid, Link, TextField, Typography } from '@mui/material';
 import { Google } from '@mui/icons-material';
 import { AuthLayout } from '../layout/AuthLayout';
 import { useForm } from '../../hooks';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { startCreatingUserWithEmailPassword } from '../../store/auth/thunks';
 
 const formData = {
@@ -20,6 +20,10 @@ const formData = {
   }
 
 export const RegisterPage = () => {
+
+  const {status,errorMessage}=useSelector(state=>state.auth);
+
+  const isChekingAuthentication= useMemo(()=>status==='checking', [status]);
 
   const dispatch= useDispatch();
 
@@ -37,7 +41,7 @@ export const RegisterPage = () => {
     
     setFormSubmitted(true);
     if( !isFormValid ) return;
-    console.log({displayName,email,password});
+   // console.log({displayName,email,password});
     dispatch(startCreatingUserWithEmailPassword(formState));
   }
   return (
@@ -89,8 +93,16 @@ export const RegisterPage = () => {
             </Grid>
             
             <Grid container spacing={ 2 } sx={{ mb: 2, mt: 1 }}>
+
+              <Grid item xs={ 12 } 
+              display={!!errorMessage ? '' : 'none'}>
+                <Alert severity='error'>
+                  { errorMessage }  
+                </Alert>
+              </Grid>
               <Grid item xs={ 12 }>
                 <Button 
+                disabled={isChekingAuthentication}
                 type='submit'
                 variant='contained' fullWidth>
                   Crear cuenta
